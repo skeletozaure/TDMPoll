@@ -9,15 +9,17 @@
   <body>
     <main class="container">
       <header class="hero">
-        <h1>Vote pour les noms des nouvelles machines</h1>
+        <h1>
+          <span class="title-main">Choisissez les noms des nouvelles machines</span>
+          <span class="title-accent">TANDEM</span>
+        </h1>
         <p>
           Choisissez un nom final pour DEV et un nom final pour PROD. Vous pouvez
           aussi proposer un nom : l’ajout vaut vote.
         </p>
         <p class="hint">Rappel : DEV = 4 lettres, PROD = 5 lettres.</p>
         <p class="hint">
-          Anti-double-vote léger via LocalStorage et cookie (contournable en
-          vidant le navigateur).
+          Votes partagés en temps réel avec anti-double-vote
         </p>
       </header>
 
@@ -80,14 +82,16 @@
         </div>
       </section>
 
-      <footer class="footer">
+      <!--<footer class="footer">
         <p>
           Mode reset (tests) : ajoutez <code>?reset=1</code> à l’URL pour effacer
           le vote local.
         </p>
-      </footer>
+      </footer>-->
     </main>
-
+    <!-- Firebase SDK (compat for global firebase namespace) -->
+    <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore-compat.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
