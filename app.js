@@ -3,6 +3,8 @@ const VOTED_KEY = "machine_naming_poll_v1_hasVoted";
 const BALLOT_KEY = "machine_naming_poll_v1_ballot";
 const VOTED_COOKIE = "machine_naming_poll_v1_voted";
 const DEFAULT_OPTIONS = ["MARS", "VENUS"];
+const DEV_NAME_LENGTH = 4;
+const PROD_NAME_LENGTH = 5;
 
 const elements = {
   devOptions: document.getElementById("dev-options"),
@@ -29,6 +31,9 @@ const validateName = (value, length) => {
   }
   return { ok: true, value: normalized };
 };
+
+const filterOptionsByLength = (options, length) =>
+  options.filter((name) => name.length === length);
 
 const loadState = () => {
   const stored = localStorage.getItem(STORAGE_KEY);
@@ -88,7 +93,7 @@ const renderOptions = (state) => {
   elements.devOptions.innerHTML = "";
   elements.prodOptions.innerHTML = "";
 
-  state.options.forEach((name) => {
+  filterOptionsByLength(state.options, DEV_NAME_LENGTH).forEach((name) => {
     const devOption = document.createElement("label");
     devOption.className = "option";
     devOption.innerHTML = `
@@ -96,6 +101,10 @@ const renderOptions = (state) => {
       <span>${name}</span>
     `;
 
+    elements.devOptions.appendChild(devOption);
+  });
+
+  filterOptionsByLength(state.options, PROD_NAME_LENGTH).forEach((name) => {
     const prodOption = document.createElement("label");
     prodOption.className = "option";
     prodOption.innerHTML = `
@@ -103,7 +112,6 @@ const renderOptions = (state) => {
       <span>${name}</span>
     `;
 
-    elements.devOptions.appendChild(devOption);
     elements.prodOptions.appendChild(prodOption);
   });
 };
@@ -113,10 +121,10 @@ const renderResults = (state, ballot) => {
   elements.ballotSummary.textContent = `Votre vote : DEV = ${ballot.DEV}, PROD = ${ballot.PROD}.`;
   elements.alreadyVoted.classList.toggle("hidden", !hasVoted());
 
-  const renderList = (target, votes) => {
+  const renderList = (target, votes, length) => {
     target.innerHTML = "";
     const total = Object.values(votes).reduce((sum, count) => sum + count, 0);
-    state.options.forEach((name) => {
+    filterOptionsByLength(state.options, length).forEach((name) => {
       const count = votes[name] || 0;
       const percent = total === 0 ? 0 : Math.round((count / total) * 100);
       const item = document.createElement("div");
@@ -132,8 +140,8 @@ const renderResults = (state, ballot) => {
     });
   };
 
-  renderList(elements.devResults, state.votes.DEV);
-  renderList(elements.prodResults, state.votes.PROD);
+  renderList(elements.devResults, state.votes.DEV, DEV_NAME_LENGTH);
+  renderList(elements.prodResults, state.votes.PROD, PROD_NAME_LENGTH);
 };
 
 const addOptionIfNeeded = (state, value) => {
@@ -159,7 +167,7 @@ const submitVote = (event) => {
   let prodChoice = prodRadio ? prodRadio.value : "";
 
   if (devInput.trim().length > 0) {
-    const validation = validateName(devInput, 4);
+    const validation = validateName(devInput, DEV_NAME_LENGTH);
     if (!validation.ok) {
       elements.devError.textContent = "Nom DEV invalide (4 caractères requis).";
       return;
@@ -169,7 +177,7 @@ const submitVote = (event) => {
   }
 
   if (prodInput.trim().length > 0) {
-    const validation = validateName(prodInput, 5);
+    const validation = validateName(prodInput, PROD_NAME_LENGTH);
     if (!validation.ok) {
       elements.prodError.textContent = "Nom PROD invalide (5 caractères requis).";
       return;
