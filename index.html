@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vote noms machines DEV/PROD</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="hero">
+        <h1>Vote pour les noms des nouvelles machines</h1>
+        <p>
+          Choisissez un nom final pour DEV et un nom final pour PROD. Vous pouvez
+          aussi proposer un nom : l’ajout vaut vote.
+        </p>
+        <p class="hint">Rappel : DEV = 4 lettres, PROD = 5 lettres.</p>
+        <p class="hint">
+          Anti-double-vote léger via LocalStorage et cookie (contournable en
+          vidant le navigateur).
+        </p>
+      </header>
+
+      <section class="panel" id="poll">
+        <form id="vote-form">
+          <div class="grid">
+            <section class="choice" aria-labelledby="dev-title">
+              <h2 id="dev-title">Choix DEV</h2>
+              <div id="dev-options" class="options"></div>
+              <label class="field">
+                Ajouter un nom DEV (4 chars)
+                <input
+                  type="text"
+                  id="dev-add"
+                  maxlength="4"
+                  autocomplete="off"
+                  placeholder="EX: NOVA"
+                />
+              </label>
+              <p class="error" id="dev-error" role="alert"></p>
+            </section>
+
+            <section class="choice" aria-labelledby="prod-title">
+              <h2 id="prod-title">Choix PROD</h2>
+              <div id="prod-options" class="options"></div>
+              <label class="field">
+                Ajouter un nom PROD (5 chars)
+                <input
+                  type="text"
+                  id="prod-add"
+                  maxlength="5"
+                  autocomplete="off"
+                  placeholder="EX: ATLAS"
+                />
+              </label>
+              <p class="error" id="prod-error" role="alert"></p>
+            </section>
+          </div>
+
+          <p class="error" id="form-error" role="alert"></p>
+
+          <button type="submit" class="primary">Valider mon vote</button>
+        </form>
+      </section>
+
+      <section class="panel hidden" id="results">
+        <h2>Résultats</h2>
+        <p id="already-voted" class="badge hidden">Vous avez déjà voté</p>
+        <div class="ballot" id="ballot-summary"></div>
+
+        <div class="results-grid">
+          <div>
+            <h3>DEV</h3>
+            <div id="dev-results" class="result-list"></div>
+          </div>
+          <div>
+            <h3>PROD</h3>
+            <div id="prod-results" class="result-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p>
+          Mode reset (tests) : ajoutez <code>?reset=1</code> à l’URL pour effacer
+          le vote local.
+        </p>
+      </footer>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
