@@ -14,53 +14,54 @@
           <span class="title-accent">TANDEM</span>
         </h1>
         <p>
-          Choisissez un nom final pour DEV et un nom final pour PROD. Vous pouvez
-          aussi proposer un nom : l’ajout vaut vote.
+          Choisissez une paire de noms pour vos nouvelles machines. Chaque paire associe un nom DEV et un nom PROD.
         </p>
-        <p class="hint">Rappel : DEV = 4 lettres, PROD = 5 lettres.</p>
         <p class="hint">
-          Votes partagés en temps réel avec anti-double-vote
+          Votes partagés en temps réel • Un seul vote par navigateur
         </p>
       </header>
 
-      <section class="panel" id="poll">
-        <form id="vote-form">
-          <div class="grid">
-            <section class="choice" aria-labelledby="dev-title">
-              <h2 id="dev-title">Choix DEV</h2>
-              <div id="dev-options" class="options"></div>
-              <label class="field">
-                Ajouter un nom DEV (4 chars)
-                <input
-                  type="text"
-                  id="dev-add"
-                  maxlength="4"
-                  autocomplete="off"
-                  placeholder="EX: NOVA"
-                />
-              </label>
-              <p class="error" id="dev-error" role="alert"></p>
-            </section>
-
-            <section class="choice" aria-labelledby="prod-title">
-              <h2 id="prod-title">Choix PROD</h2>
-              <div id="prod-options" class="options"></div>
-              <label class="field">
-                Ajouter un nom PROD (5 chars)
-                <input
-                  type="text"
-                  id="prod-add"
-                  maxlength="5"
-                  autocomplete="off"
-                  placeholder="EX: ATLAS"
-                />
-              </label>
-              <p class="error" id="prod-error" role="alert"></p>
-            </section>
+      <!-- Admin Panel (hidden by default) -->
+      <section class="panel hidden" id="admin-panel">
+        <h2>🔧 Mode Administration</h2>
+        <p class="hint">Gérez les paires de noms proposées au vote</p>
+        
+        <form id="admin-form" class="admin-form">
+          <div class="admin-form-grid">
+            <div class="field">
+              <label for="admin-dev">Nom DEV (4 caractères)</label>
+              <input
+                type="text"
+                id="admin-dev"
+                maxlength="4"
+                autocomplete="off"
+                placeholder="MARS"
+                required
+              />
+            </div>
+            <div class="field">
+              <label for="admin-prod">Nom PROD (5 caractères)</label>
+              <input
+                type="text"
+                id="admin-prod"
+                maxlength="5"
+                autocomplete="off"
+                placeholder="VENUS"
+                required
+              />
+            </div>
           </div>
+          <button type="submit" class="primary">Ajouter cette paire</button>
+        </form>
 
+        <div class="admin-list" id="admin-list"></div>
+      </section>
+
+      <section class="panel" id="poll">
+        <h2>Choisissez une paire</h2>
+        <form id="vote-form">
+          <div id="pairs-options" class="pairs-container"></div>
           <p class="error" id="form-error" role="alert"></p>
-
           <button type="submit" class="primary">Valider mon vote</button>
         </form>
       </section>
@@ -69,25 +70,8 @@
         <h2>Résultats</h2>
         <p id="already-voted" class="badge hidden">Vous avez déjà voté</p>
         <div class="ballot" id="ballot-summary"></div>
-
-        <div class="results-grid">
-          <div>
-            <h3>DEV</h3>
-            <div id="dev-results" class="result-list"></div>
-          </div>
-          <div>
-            <h3>PROD</h3>
-            <div id="prod-results" class="result-list"></div>
-          </div>
-        </div>
+        <div id="pair-results" class="result-list"></div>
       </section>
-
-      <!--<footer class="footer">
-        <p>
-          Mode reset (tests) : ajoutez <code>?reset=1</code> à l’URL pour effacer
-          le vote local.
-        </p>
-      </footer>-->
     </main>
     <!-- Firebase SDK (compat for global firebase namespace) -->
     <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>

@@ -224,7 +224,7 @@ body::after {
   border: none;
   border-radius: 12px;
   background: linear-gradient(135deg, var(--primary), #fb923c);
-  color: #fff;
+  color: var(--text);
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 10px 18px rgba(249, 115, 22, 0.22);
@@ -346,9 +346,160 @@ code {
   }
 }
 
+/* Pair Cards */
+.pairs-container {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 900px) {
+  .pairs-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
+.pair-card {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 2px solid var(--border);
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.pair-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
+  border-color: rgba(249, 115, 22, 0.3);
+}
+
+.pair-card.selected {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+}
+
+.pair-card input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pair-name {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.03em;
+  color: var(--text);
+}
+
+.pair-name.dev {
+  text-align: right;
+}
+
+.pair-name.prod {
+  text-align: left;
+}
+
+.pair-separator {
+  width: 3px;
+  height: 28px;
+  background: linear-gradient(180deg, var(--primary), var(--accent));
+  border-radius: 4px;
+  opacity: 0.6;
+}
+
+.pair-card.selected .pair-separator {
+  opacity: 1;
+}
+
+/* Admin Panel */
+.admin-form {
+  margin-bottom: 24px;
+}
+
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.admin-list {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-pair-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #fafafa;
+  border: 1px solid var(--border);
+}
+
+.admin-pair-names {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.admin-pair-names .sep {
+  margin: 0 8px;
+  color: var(--muted);
+}
+
+.admin-delete-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  background: #fee;
+  color: var(--error);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-delete-btn:hover {
+  background: var(--error);
+  color: white;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .pair-card {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    text-align: center;
+  }
+  
+  .pair-name.dev,
+  .pair-name.prod {
+    text-align: center;
+  }
+  
+  .pair-separator {
+    width: 32px;
+    height: 3px;
+    margin: 0 auto;
   }
 }
