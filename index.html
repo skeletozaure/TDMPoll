@@ -17,7 +17,7 @@
           Choisissez une paire de noms pour vos nouvelles machines. Chaque paire associe un nom DEV et un nom PROD.
         </p>
         <p class="hint">
-          Votes partagés en temps réel • Un seul vote par personne
+          Votes partagés en temps réel • Un seul vote par personne          
         </p>
       </header>
 
@@ -55,6 +55,24 @@
         </form>
 
         <div class="admin-list" id="admin-list"></div>
+
+        <div id="delete-voter-section" class="delete-voter-section">
+          <h3>Supprimer un vote</h3>
+          <p class="hint">Sélectionnez un code de navigateur pour supprimer son vote.</p>
+          <form id="delete-voter-form">
+            <div class="field">
+              <label for="voter-select">Code du votant</label>
+              <select id="voter-select" required>
+                <option value="">-- Sélectionner --</option>
+              </select>
+            </div>
+            <div id="voter-pair-info" class="voter-info hidden">
+              <p class="hint">Vote actuel : <span id="voter-current-pair"></span></p>
+            </div>
+            <button type="submit" class="error-btn">Supprimer ce vote</button>
+          </form>
+          <p class="error" id="delete-voter-error" role="alert"></p>
+        </div>
       </section>
 
       <section class="panel" id="poll">
@@ -71,6 +89,15 @@
         <p id="already-voted" class="badge hidden">Vous avez déjà voté</p>
         <div class="ballot" id="ballot-summary"></div>
         <div id="pair-results" class="result-list"></div>
+      </section>
+
+      <section class="panel hidden" id="browser-id-section">
+        <h2>Votre code de navigateur</h2>
+        <p class="hint">Ce code vous identifie de manière unique.</p>
+        <div class="browser-id-display">
+          <code id="browser-fingerprint-display"></code>
+          <button type="button" class="secondary" id="copy-fingerprint-btn">Copier</button>
+        </div>
       </section>
     </main>
     <!-- Firebase SDK (compat for global firebase namespace) -->

@@ -474,6 +474,129 @@ code {
   color: white;
 }
 
+/* Browser ID Section */
+.browser-id-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f5f5f5;
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.browser-id-display code {
+  flex: 1;
+  font-family: "Monaco", "Courier New", monospace;
+  font-size: 0.85rem;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 8px;
+  word-break: break-all;
+  color: var(--text);
+  border: 1px solid #e5e5e5;
+}
+
+.secondary {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--text);
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.secondary:hover {
+  background: #f5f5f5;
+  border-color: var(--primary);
+}
+
+.change-vote-form {
+  padding: 16px;
+  border-radius: 12px;
+  background: #f9f7ff;
+  border: 1px solid rgba(249, 115, 22, 0.2);
+}
+
+.change-vote-form .field {
+  margin-bottom: 14px;
+}
+
+.change-vote-form select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: white;
+  color: var(--text);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border 0.2s ease;
+}
+
+.change-vote-form select:hover {
+  border-color: var(--primary);
+}
+
+.change-vote-form select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+/* Delete Voter Section */
+.delete-voter-section {
+  margin-top: 24px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #fef2f2;
+  border: 1px solid #fed7d7;
+}
+
+.delete-voter-section h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.voter-info {
+  padding: 12px;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid #e5e5e5;
+  margin: 12px 0;
+}
+
+.voter-info.hidden {
+  display: none;
+}
+
+.error-btn {
+  margin-top: 14px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  background: #ef4444;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.error-btn:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+.error-btn:active {
+  transform: translateY(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;
@@ -501,5 +624,18 @@ code {
     width: 32px;
     height: 3px;
     margin: 0 auto;
+  }
+  
+  .browser-id-display {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .browser-id-display code {
+    word-break: break-all;
+  }
+  
+  .secondary {
+    width: 100%;
   }
 }

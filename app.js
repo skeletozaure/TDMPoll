@@ -75,6 +75,14 @@ const elements = {
   adminList: document.getElementById("admin-list"),
   adminDev: document.getElementById("admin-dev"),
   adminProd: document.getElementById("admin-prod"),
+  browserIdSection: document.getElementById("browser-id-section"),
+  browserFingerprintDisplay: document.getElementById("browser-fingerprint-display"),
+  copyFingerprintBtn: document.getElementById("copy-fingerprint-btn"),
+  deleteVoterForm: document.getElementById("delete-voter-form"),
+  voterSelect: document.getElementById("voter-select"),
+  voterPairInfo: document.getElementById("voter-pair-info"),
+  voterCurrentPair: document.getElementById("voter-current-pair"),
+  deleteVoterError: document.getElementById("delete-voter-error"),
 };
 
 // === Utilities ===
@@ -88,6 +96,125 @@ const clearErrors = () => {
 const isAdminMode = () => {
   const params = new URLSearchParams(globalThis.location.search);
   return params.get("admin") === ADMIN_PASSWORD;
+};
+
+// === Browser ID Display ===
+let fingerprintBtnListener = null;
+
+const showBrowserId = (browserId) => {
+  elements.browserIdSection.classList.remove("hidden");
+  elements.browserFingerprintDisplay.textContent = browserId;
+  
+  // Remove previous listener
+  if (fingerprintBtnListener) {
+    elements.copyFingerprintBtn.removeEventListener("click", fingerprintBtnListener);
+  }
+  
+  // Create new listener
+  fingerprintBtnListener = () => {
+    navigator.clipboard.writeText(browserId);
+    const originalText = elements.copyFingerprintBtn.textContent;
+    elements.copyFingerprintBtn.textContent = "Copié !";
+    setTimeout(() => {
+      elements.copyFingerprintBtn.textContent = originalText;
+    }, 2000);
+  };
+  
+  elements.copyFingerprintBtn.addEventListener("click", fingerprintBtnListener);
+};
+
+const populateChangePairSelect = (state, currentIndex) => {
+  // Disabled function - users can no longer change their votes from the UI
+};
+
+const handleChangeVote = (event) => {
+  // Disabled function - users cannot change votes anymore
+};
+
+// === Admin: Delete Voter ===
+const populateVoterSelect = (state) => {
+  elements.voterSelect.innerHTML = '<option value="">-- Sélectionner --</option>';
+  const voterIds = Object.keys(state.voters).sort();
+  
+  if (voterIds.length === 0) {
+    elements.voterSelect.innerHTML = '<option disabled>Aucun votant</option>';
+    return;
+  }
+  
+  voterIds.forEach((browserId) => {
+    const voter = state.voters[browserId];
+    const pair = state.pairs[voter.pairIndex];
+    const option = document.createElement("option");
+    option.value = browserId;
+    option.textContent = `${browserId.substring(0, 16)}... → ${pair.dev}/${pair.prod}`;
+    elements.voterSelect.appendChild(option);
+  });
+};
+
+const handleVoterSelectChange = async () => {
+  const state = await getVotesState();
+  const browserId = elements.voterSelect.value;
+  
+  if (!browserId) {
+    elements.voterPairInfo.classList.add("hidden");
+    return;
+  }
+  
+  const voter = state.voters[browserId];
+  if (!voter) {
+    elements.voterPairInfo.classList.add("hidden");
+    return;
+  }
+  
+  const pair = state.pairs[voter.pairIndex];
+  elements.voterCurrentPair.textContent = `${pair.dev} / ${pair.prod}`;
+  elements.voterPairInfo.classList.remove("hidden");
+};
+
+const handleDeleteVoter = async (event) => {
+  event.preventDefault();
+  
+  const browserId = elements.voterSelect.value;
+  if (!browserId) {
+    elements.deleteVoterError.textContent = "Veuillez sélectionner un votant.";
+    return;
+  }
+  
+  if (!confirm("Êtes-vous sûr ? Ce vote sera supprimé et le votant pourra voter à nouveau.")) {
+    return;
+  }
+  
+  try {
+    const state = await getVotesState();
+    const voter = state.voters[browserId];
+    
+    if (!voter) {
+      elements.deleteVoterError.textContent = "Vote non trouvé.";
+      return;
+    }
+    
+    // Decrement vote count
+    state.pairs[voter.pairIndex].votes = Math.max(0, state.pairs[voter.pairIndex].votes - 1);
+    
+    // Remove voter
+    delete state.voters[browserId];
+    
+    await saveVotesState(state);
+    
+    elements.deleteVoterError.textContent = "Vote supprimé avec succès !";
+    elements.deleteVoterError.style.color = "#16a34a";
+    
+    setTimeout(() => {
+      elements.deleteVoterError.textContent = "";
+      elements.deleteVoterError.style.color = "var(--error)";
+      populateVoterSelect(state);
+      elements.voterSelect.value = "";
+      elements.voterPairInfo.classList.add("hidden");
+    }, 2000);
+  } catch (error) {
+    console.error("Erreur lors de la suppression du vote:", error);
+    elements.deleteVoterError.textContent = "Erreur lors de la suppression.";
+  }
 };
 
 // === Firestore Operations ===
@@ -213,6 +340,7 @@ const submitVote = async (event) => {
       elements.formError.textContent = "Vous avez déjà voté sur ce navigateur.";
       renderPairs(state, existingVote.pairIndex);
       renderResults(state, existingVote);
+      showBrowserId(browserId);
       return;
     }
 
@@ -236,6 +364,8 @@ const submitVote = async (event) => {
     renderPairs(state, pairIndex);
     renderResults(state, ballot);
     elements.voteForm.querySelector("button[type='submit']").disabled = true;
+    
+    showBrowserId(browserId);
   } catch (error) {
     console.error("Erreur lors du vote:", error);
     elements.formError.textContent = "Erreur lors de l'enregistrement du vote. Réessayez.";
@@ -373,6 +503,7 @@ const init = async () => {
       renderPairs(state, ballot.pairIndex);
       renderResults(state, ballot);
       elements.voteForm.querySelector("button[type='submit']").disabled = true;
+      showBrowserId(browserId);
     }
 
     // Real-time listener
@@ -387,6 +518,7 @@ const init = async () => {
           
           if (isAdminMode()) {
             renderAdminList(updatedState);
+            populateVoterSelect(updatedState);
           }
           
           if (ballot) {
@@ -411,4 +543,9 @@ elements.voteForm.addEventListener("submit", submitVote);
 
 if (elements.adminForm) {
   elements.adminForm.addEventListener("submit", handleAdminSubmit);
+}
+
+if (elements.deleteVoterForm) {
+  elements.deleteVoterForm.addEventListener("submit", handleDeleteVoter);
+  elements.voterSelect.addEventListener("change", handleVoterSelectChange);
 }
